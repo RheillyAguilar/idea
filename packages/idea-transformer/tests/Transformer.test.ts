@@ -72,6 +72,14 @@ describe('Transformer Tests', () => {
     expect(() => transformer.transform()).to.throw('No plugins defined in schema file');
   });
 
+  // Line 177
+  it('Should add child columns if parent columns are null', () => {
+    const transformer = new Transformer(idea, { cwd });
+    const parentType = { columns: null };
+    const childType = { columns: [{ name: 'newColumn' }] };
+    transformer['_merge'](parentType as unknown as TypeConfig, childType as unknown as TypeConfig);
+    expect(parentType.columns).to.deep.equal([{ name: 'newColumn' }]);
+  });
 
   /*
   * ADD MORE UNIT TEST TO ACHIEVE 85%
@@ -85,7 +93,10 @@ describe('Transformer Tests', () => {
     expect(parentType.attributes).to.deep.equal({ name: 'parent' });
   });
 
-
-
+  it('Should handle undefined loader during construction', () => {
+    const transformer = new Transformer(idea);
+    expect(transformer.loader).to.be.an('object');
+    expect(transformer.input).to.be.an('string');
+  });
 
 });
